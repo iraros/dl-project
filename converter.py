@@ -38,7 +38,7 @@ def save_all_as_thing(thing_name):
 
             # Display the spectrogram on a mel scale
             # sample rate and hop length parameters are used to render the time axis
-            librosa.display.specshow(log_S, cmap='gray', sr=sr, x_axis='time', y_axis='mel')
+            librosa.display.specshow(S, sr=sr, x_axis='time', y_axis='mel')
             # librosa.display.waveplot(y, cmap='gray_r', sr=sr, x_axis='time')
 
             # Make the figure layout compact
@@ -51,4 +51,4 @@ def save_all_as_thing(thing_name):
             print(idx)
 
 
-save_all_as_thing('gray_scale')
+save_all_as_thing('non_log_spectrogram')

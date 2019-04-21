@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 from shutil import copyfile
 
 cls2name = {
@@ -73,6 +74,16 @@ def path2class(path):
     class_num = int(components[1])
     class_name = cls2name[class_num]
     return class_name
+
+
+def clean_misclassifications_file(file_path):
+    text = open(file_path).read()
+    text = re.sub('INFO:.+', '', text)
+    text = re.sub('.+(?=datas)', '', text)
+    text = re.sub('\n\n', '\n', text)
+    lines = text.split('\n')
+    not_empty_lines = [line for line in lines if line.strip()]
+    open(file_path, 'w').write('\n'.join(not_empty_lines))
 
 
 load_meta_data()
