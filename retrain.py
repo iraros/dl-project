@@ -29,7 +29,7 @@ representation. If the softmax layer contains N labels, this corresponds
 to learning N + 2048*N model parameters for the biases and weights.
 
 Here's an example, which assumes you have a folder containing class-named
-subfolders, each full of images for each label_image. The example folder flower_photos
+subfolders, each full of images for each get_images_labels_scores. The example folder flower_photos
 should have a structure like this:
 
 ~/flower_photos/daisy/photo1.jpg
@@ -39,7 +39,7 @@ should have a structure like this:
 ...
 ~/flower_photos/sunflower/somepicture.jpg
 
-The subfolder names are important, since they define what label_image is applied to
+The subfolder names are important, since they define what get_images_labels_scores is applied to
 each image, but the filenames themselves don't matter. (For a working example,
 download http://download.tensorflow.org/example_images/flower_photos.tgz
 and run  tar xzf flower_photos.tgz  to unpack it.)
@@ -53,11 +53,11 @@ python retrain.py --image_dir ~/flower_photos
 ```
 
 You can replace the image_dir argument with any folder containing subfolders of
-images. The label_image for each image is taken from the name of the subfolder it's
+images. The get_images_labels_scores for each image is taken from the name of the subfolder it's
 in.
 
 This produces a new model file that can be loaded and run by any TensorFlow
-program, for example the tensorflow/examples/label_image sample code.
+program, for example the tensorflow/examples/get_images_labels_scores sample code.
 
 By default this script will use the highly accurate, but comparatively large and
 slow Inception V3 model architecture. It's recommended that you start with this
@@ -149,7 +149,7 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
 
     Analyzes the sub folders in the image directory, splits them into stable
     training, testing, and validation sets, and returns a data structure
-    describing the lists of images for each label_image and their paths.
+    describing the lists of images for each get_images_labels_scores and their paths.
 
     Args:
       image_dir: String path to a folder containing subfolders of images.
@@ -157,8 +157,8 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
       validation_percentage: Integer percentage of images reserved for validation.
 
     Returns:
-      An OrderedDict containing an entry for each label_image subfolder, with images
-      split into training, testing, and validation sets within each label_image.
+      An OrderedDict containing an entry for each get_images_labels_scores subfolder, with images
+      split into training, testing, and validation sets within each get_images_labels_scores.
       The order of items defines the class indices.
     """
     if not tf.gfile.Exists(image_dir):
@@ -235,13 +235,13 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
 
 
 def get_image_path(image_lists, label_name, index, image_dir, category):
-    """Returns a path to an image for a label_image at the given index.
+    """Returns a path to an image for a get_images_labels_scores at the given index.
 
     Args:
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       label_name: Label string we want to get an image for.
       index: Int offset of the image we want. This will be moduloed by the
-      available number of images for the label_image, so it can be arbitrarily large.
+      available number of images for the get_images_labels_scores, so it can be arbitrarily large.
       image_dir: Root folder string of the subfolders containing the training
       images.
       category: Name string of set to pull images from - training, testing, or
@@ -269,13 +269,13 @@ def get_image_path(image_lists, label_name, index, image_dir, category):
 
 def get_bottleneck_path(image_lists, label_name, index, bottleneck_dir,
                         category, module_name):
-    """Returns a path to a bottleneck file for a label_image at the given index.
+    """Returns a path to a bottleneck file for a get_images_labels_scores at the given index.
 
     Args:
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       label_name: Label string we want to get an image for.
       index: Integer offset of the image we want. This will be moduloed by the
-      available number of images for the label_image, so it can be arbitrarily large.
+      available number of images for the get_images_labels_scores, so it can be arbitrarily large.
       bottleneck_dir: Folder string holding cached files of bottleneck values.
       category: Name string of set to pull images from - training, testing, or
       validation.
@@ -384,10 +384,10 @@ def get_or_create_bottleneck(sess, image_lists, label_name, index, image_dir,
 
     Args:
       sess: The current active TensorFlow Session.
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       label_name: Label string we want to get an image for.
       index: Integer offset of the image we want. This will be modulo-ed by the
-      available number of images for the label_image, so it can be arbitrarily large.
+      available number of images for the get_images_labels_scores, so it can be arbitrarily large.
       image_dir: Root folder string of the subfolders containing the training
       images.
       category: Name string of which set to pull images from - training, testing,
@@ -448,7 +448,7 @@ def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
 
     Args:
       sess: The current active TensorFlow Session.
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       image_dir: Root folder string of the subfolders containing the training
       images.
       bottleneck_dir: Folder string holding cached files of bottleneck values.
@@ -490,7 +490,7 @@ def get_random_cached_bottlenecks(sess, image_lists, how_many, category,
 
     Args:
       sess: Current TensorFlow Session.
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       how_many: If positive, a random sample of this size will be chosen.
       If negative, all bottlenecks will be retrieved.
       category: Name string of which set to pull from - training, testing, or
@@ -557,7 +557,7 @@ def get_random_distorted_bottlenecks(
 
     Args:
       sess: Current TensorFlow Session.
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       how_many: The integer number of bottleneck values to return.
       category: Name string of which set of images to fetch - training, testing,
       or validation.
@@ -834,7 +834,7 @@ def run_final_eval(train_session, module_spec, class_count, image_lists,
       train_session: Session for the train graph with the tensors below.
       module_spec: The hub.ModuleSpec for the image module being used.
       class_count: Number of classes
-      image_lists: OrderedDict of training images for each label_image.
+      image_lists: OrderedDict of training images for each get_images_labels_scores.
       jpeg_data_tensor: The layer to feed jpeg image data into.
       decoded_image_tensor: The output of decoding and resizing the image.
       resized_image_tensor: The input node of the recognition graph.
