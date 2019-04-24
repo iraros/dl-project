@@ -1,20 +1,10 @@
 import csv
 import os
 import re
+import numpy as np
 from shutil import copyfile
 
-cls2name = {
-    0: 'air_conditioner',
-    1: 'car_horn',
-    2: 'children_playing',
-    3: 'dog_bark',
-    4: 'drilling',
-    5: 'engine_idling',
-    6: 'gun_shot',
-    7: 'jackhammer',
-    8: 'siren',
-    9: 'street_music',
-}
+import constants
 
 
 def split_dir_by_class(folder_path):
@@ -36,11 +26,11 @@ def split_dir_by_class(folder_path):
         class_dir = class_dirs[class_num]
         new_file_path = os.path.join(class_dir, file_name)
         copyfile(file_path, new_file_path)
-        print(file_name + ' is a ' + cls2name[class_num])
+        print(file_name + ' is a ' + constants.cls2name[class_num])
 
 
-metadata_path = '/home/ira/Desktop/inception-trial/datas/UrbanSound8K/metadata/UrbanSound8K.csv'
-audio_path = '/home/ira/Desktop/inception-trial/datas/UrbanSound8K/audio'
+metadata_path = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/metadata/UrbanSound8K.csv'
+audio_path = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/audio'
 metadata = {}
 
 
@@ -60,19 +50,19 @@ def load_meta_data():
 
 
 def path2wav_path(path):
-    return name2path(path2wav(path) + '.wav')
+    return name2path(path2name(path) + '.wav')
 
 
-def path2wav(path):
+def path2name(path):
     basename = os.path.basename(path)
     return basename.split('.')[0]
 
 
 def path2class(path):
-    wav_name = path2wav(path)
-    components = wav_name.split('-')
+    name = path2name(path)
+    components = name.split('-')
     class_num = int(components[1])
-    class_name = cls2name[class_num]
+    class_name = constants.cls2name[class_num]
     return class_name
 
 
@@ -86,4 +76,12 @@ def clean_misclassifications_file(file_path):
     open(file_path, 'w').write('\n'.join(not_empty_lines))
 
 
-load_meta_data()
+def get_mean_length():
+    load_meta_data()
+    lengths = []
+    for name, data in metadata.items():
+        length = float(data['end']) - float(data['start'])
+        lengths.append(length)
+    len_arr = np.array(lengths)
+    mean_length = np.mean(len_arr)
+    print(mean_length)  # 3.61

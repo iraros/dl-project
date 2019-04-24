@@ -5,8 +5,16 @@ import numpy as np
 from PIL import Image
 
 
-sample_wav = '/home/ira/Desktop/inception-trial/trials/wave_form.png'
-sample_spc = '/home/ira/Desktop/inception-trial/trials/spectrogram.png'
+sample_wav = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/wave_forms/dog_bark/344-3-5-0.wav.png'
+sample_spc = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/spectrograms/dog_bark/344-3-5-0.wav.png'
+
+
+def get_all_paths(root):
+    paths = []
+    for path, sub_dirs, files in os.walk(root):
+        for name in files:
+            paths.append(os.path.join(path, name))
+    return paths
 
 
 def im_int(image, mult):
@@ -27,27 +35,29 @@ empty = Image.new('L', (1200, 400))
 full = Image.new('L', (1200, 400), 'white')
 
 
-def merge_plots(wav_path, spec_path):
+def merge_plots(wav_path, spc_path):
     wav = binarize_wave_plot(open_as_band(wav_path))
-    spc = open_as_band(spec_path)
+    spc = open_as_band(spc_path)
     # merged = Image.merge('RGB', [spc, im_int(full, .25), wav])  # base form with slight background
     # merged = Image.merge('RGB', [spc, empty, empty])  # only spectrogram
-    merged = Image.merge('RGB', [spc, spc, spc])
+    merged = Image.merge('RGBA', [spc, spc, wav, full])
     return merged
 
 
-def get_all_paths(root):
-    paths = []
-    for path, sub_dirs, files in os.walk(root):
-        for name in files:
-            paths.append(os.path.join(path, name))
-    return paths
+def stack_plots(wav_path, spc_path):
+    wav = Image.open(wav_path)
+    spc = Image.open(spc_path)
+    w, h = wav.size
+    new = Image.new('RGB', (w, h * 2))
+    new.paste(spc)
+    new.paste(wav, (0, h))
+    return new
 
 
 image_paths_template = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/{image_type}'
 
 if __name__ == '__main__':
-    spectrogram_paths = get_all_paths(image_paths_template.format(image_type='gray_scale'))
+    spectrogram_paths = get_all_paths(image_paths_template.format(image_type='spectrograms'))
     waveplot_paths = get_all_paths(image_paths_template.format(image_type='wave_forms'))
     if len(spectrogram_paths) != len(waveplot_paths):
         raise ValueError
@@ -57,8 +67,8 @@ if __name__ == '__main__':
         spectrogram_path = spectrogram_paths[i]
         if os.path.basename(waveplot_path) != os.path.basename(spectrogram_path):
             raise ValueError
-        merged_image = merge_plots(waveplot_path, spectrogram_path)
-        save_path = re.sub('wave_forms', 'recreated_gray_scale_spectrogram_from_channels', waveplot_path)
+        merged_image = stack_plots(waveplot_path, spectrogram_path)
+        save_path = re.sub('wave_forms', 'spectrogram_and_wav_stacked', waveplot_path)
         save_dir = os.path.dirname(save_path)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)

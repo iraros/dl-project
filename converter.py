@@ -18,8 +18,6 @@ def save_all_as_thing(thing_name):
         next(csv_reader)  # headers
         for idx, line in enumerate(csv_reader):
             print('arrived: ' + str(idx))
-            if random.random() > .1:
-                continue
             save_image(line, thing_name)
             print('saved: ' + str(idx))
 
