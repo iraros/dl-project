@@ -46,4 +46,6 @@ def save_image(line, thing_name):
     plt.close()
 
 
-save_all_as_thing('small_sample')
+
+
+# save_all_as_thing('small_sample')

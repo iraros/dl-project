@@ -11,7 +11,7 @@ def split_dir_by_class(folder_path):
     folder_name = os.path.basename(folder_path)
     parent = os.path.dirname(folder_path)
     split_dir = os.path.join(parent, folder_name + ' split by class')
-    class_dirs = [os.path.join(split_dir, class_name) for class_name in cls2name.values()]
+    class_dirs = [os.path.join(split_dir, class_name) for class_name in constants.cls2name.values()]
     for class_dir in class_dirs:
         if not os.path.exists(class_dir):
             os.makedirs(class_dir)
@@ -85,3 +85,35 @@ def get_mean_length():
     len_arr = np.array(lengths)
     mean_length = np.mean(len_arr)
     print(mean_length)  # 3.61
+
+
+def get_all_paths(root):
+    paths = []
+    for path, sub_dirs, files in os.walk(root):
+        for name in files:
+            paths.append(os.path.join(path, name))
+    return paths
+
+
+def path2fold(path):
+    name = path2name(path)
+    file_metadata = metadata[name + '.wav']
+    return int(file_metadata['fold'])
+
+
+def get_paths_in_dir_by_fold(dir_path):
+    paths_in_dir = get_all_paths(dir_path)
+    path2fold_dic = {path: path2fold(path) for path in paths_in_dir}
+    fold2path_dic = {}
+    for path, fold in path2fold_dic.items():
+        fold2path_dic[fold] = fold2path_dic.get(fold, [])
+        fold2path_dic[fold].append(path)
+    return fold2path_dic
+
+
+load_meta_data()
+
+
+# if __name__ == '__main__':
+#     result = get_paths_in_dir_by_fold('/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/spectrograms')
+#     pass

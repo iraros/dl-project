@@ -58,24 +58,24 @@ def load_labels(label_file):
     return label
 
 
-model_base = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/output_graphs'
-labels_base = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/output_labels'
-
 input_layer = 'Placeholder'
 output_layer = 'final_result'
 input_name = 'import/' + input_layer
 output_name = 'import/' + output_layer
 
 
-def get_images_labels_scores(file_names, model_name, label_name):
-    labels = load_labels(os.path.join(labels_base, label_name + '.txt'))
+def get_images_labels_scores(file_names, model_path, labels_path):
+    labels = load_labels(labels_path)
 
-    graph = load_graph(os.path.join(model_base, model_name + '.pb'))
+    graph = load_graph(model_path)
     input_operation = graph.get_operation_by_name(input_name)
     output_operation = graph.get_operation_by_name(output_name)
 
     image_scores_dicts = []
-    for file_name in file_names:
+    image_num = len(file_names)
+    for idx, file_name in enumerate(file_names):
+        print('classifying: {} / {}, - {}, should be: {}'.format(idx, image_num, os.path.basename(file_name),
+                                                                 os.path.basename(os.path.dirname(file_name))))
         image_scores = apply_graph(file_name, graph, input_operation, output_operation)
         image_scores_dict = dict(zip(labels, image_scores))
         image_scores_dicts.append(image_scores_dict)
@@ -92,34 +92,16 @@ def apply_graph(file_name, graph, input_operation, output_operation):
     return np.squeeze(results)
 
 
-def get_labels_string(image, model_name, label_name):
-    labels_result = get_images_labels_scores(image, model_name, label_name)
-    labels_sorted = sorted(labels_result.items(), key=lambda kv: -kv[1])
+def get_labels_string_for_one_image(image, model_path, labels_path):
+    labels_result = get_images_labels_scores([image], model_path, labels_path)
+    labels_sorted = sorted(labels_result[0].items(), key=lambda kv: -kv[1])
     labels_rounded = [(str(round(item[1], 4)), item[0]) for item in labels_sorted]
     labels_string = '\n'.join([' '.join(label) for label in labels_rounded])
     return labels_string
 
 
-def classify_images(file_names, model_name, label_name):
-    labels_results = get_images_labels_scores(file_names, model_name, label_name)
+def classify_images(file_names, model_path, labels_path):
+    labels_results = get_images_labels_scores(file_names, model_path, labels_path)
     max_labels = [max(labels_result.keys(), key=lambda k: labels_result[k]) for labels_result in labels_results]
+    max_labels = [max_label.replace(' ', '_') for max_label in max_labels]
     return max_labels
-
-
-def evaluate_accuracy(images, true_labels, model_name, labels_name):
-    predicted_labels = classify_images(images, model_name, labels_name)
-    good_predictions = [true_labels[i] == predicted_labels[i] for i in range(len(true_labels))]
-    accuracy = np.mean(good_predictions)
-    return accuracy
-
-
-if __name__ == '__main__':
-    print(3)
-    image_paths = [
-        '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/gray_scale/dog_bark/344-3-5-0.wav.png',
-        '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/gray_scale/gun_shot/7061-6-0-0.wav.png']
-    model_simple_name = 'gray_scale'
-    labels_simple_name = 'gray_scale'
-    # results = classify_images(image_paths, model_simple_name, labels_simple_name)
-    evaluate_accuracy(image_paths, ['dog bark', 'driller'], model_simple_name, labels_simple_name)
-    pass

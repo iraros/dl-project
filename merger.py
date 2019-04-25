@@ -4,17 +4,10 @@ import re
 import numpy as np
 from PIL import Image
 
+import utils
 
 sample_wav = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/wave_forms/dog_bark/344-3-5-0.wav.png'
 sample_spc = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/spectrograms/dog_bark/344-3-5-0.wav.png'
-
-
-def get_all_paths(root):
-    paths = []
-    for path, sub_dirs, files in os.walk(root):
-        for name in files:
-            paths.append(os.path.join(path, name))
-    return paths
 
 
 def im_int(image, mult):
@@ -57,8 +50,8 @@ def stack_plots(wav_path, spc_path):
 image_paths_template = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/{image_type}'
 
 if __name__ == '__main__':
-    spectrogram_paths = get_all_paths(image_paths_template.format(image_type='spectrograms'))
-    waveplot_paths = get_all_paths(image_paths_template.format(image_type='wave_forms'))
+    spectrogram_paths = utils.get_all_paths(image_paths_template.format(image_type='spectrograms'))
+    waveplot_paths = utils.get_all_paths(image_paths_template.format(image_type='wave_forms'))
     if len(spectrogram_paths) != len(waveplot_paths):
         raise ValueError
     im_num = len(spectrogram_paths)
