@@ -1,17 +1,19 @@
 # Using Transfer Learning and Audio-Visual adaptation for Sound Classification
 
 
-A final project for the course [Deep Learning](https://www30.tau.ac.il/yedion/syllabus.asp?course=0368448801) with professor [Lior Wolf](https://www.cs.tau.ac.il/~wolf/) of Tel Aviv University, Fall 2018 
+A final project for the course [Deep Learning](https://www30.tau.ac.il/yedion/syllabus.asp?course=0368448801) with professor [Lior Wolf](https://www.cs.tau.ac.il/~wolf/) of Tel Aviv University, Fall 2018. 
 
 This README provides explanations for the code in the project.
 Further explanations on the project itself can be found in [its google doc](https://docs.google.com/document/d/1o34ps-ylUmQE6mW7BKTi74rkhj25P-hmon9d7wYMQ3k/edit?usp=sharing).
 
 
-## external scripts
+## External scripts
+
+External scripts that are part of my project.
 
 ### retrain.py
 
-main script from [TensorHub](https://www.tensorflow.org/hub/tutorials/image_retraining).
+Main script from [TensorHub](https://www.tensorflow.org/hub/tutorials/image_retraining).
 Contains many options:
 
 ```
@@ -38,13 +40,28 @@ usage: retrain.py [-h] [--image_dir IMAGE_DIR] [--output_graph OUTPUT_GRAPH]
                   [--logging_verbosity {DEBUG,INFO,WARN,ERROR,FATAL}]
 ```
 
-As stated before, more information can be obtained by running ```!python retrain.py -h```.
+dependencies:
+```
+argparse
+collections
+datetime
+hashlib
+os.path
+random
+re
+sys
+numpy as np
+tensorflow as tf
+tensorflow_hub as hub
+```
+
+More information can be obtained by running ```!python retrain.py -h```.
 I modified this file very little.
 
 ### label_image_script.py
 
 Basically [This](https://raw.githubusercontent.com/tensorflow/tensorflow/master/tensorflow/examples/label_image/label_image.py) TensorHub script.
-Is the inspiration for my labeler.
+It is the inspiration for my labeler.
 
 Usage example from TensorHub:
 ```
@@ -55,12 +72,25 @@ python label_image.py \
 --image=$HOME/flower_photos/daisy/21652746_cc379e0eea_m.jpg
 ```
 
+dependencies:
+```
+argparse
+numpy as np
+tensorflow as tf
+```
+
 ## My code
 
+Code files that I wrote.
 
 ### constants.py
 
-A constants file, contains class number to name mapping.
+A constants file, contains a mapping from class number to name.
+
+dependencies:
+```
+none
+```
 
 ### converter.py
 
@@ -68,8 +98,9 @@ Used to create visual features.
 Loads all the wav files and converts them according to various specifications.
 Based on [this code](https://gist.github.com/lukeinator42/917308d61b6a44afd3739c5ca73ec82b#file-spectrogram-py) by [**Lukas Grasse**](https://medium.com/@lukasgrasse).
 
+
+dependencies:
 ```
-# dependencies
 csv
 os
 librosa
@@ -82,8 +113,9 @@ librosa.display
 
 Used to perform multiple folds evaluation.
 
+
+dependencies:
 ```
-# dependencies
 (local storage)
 json
 os
@@ -97,8 +129,9 @@ numpy as np
 Used to label images, i.e. to perform inference on a given model.
 Inspired by the labeling script from TensorHub.
 
+
+dependencies:
 ```
-# dependencies
 os
 numpy as np
 tensorflow as tf
@@ -109,8 +142,9 @@ tensorflow as tf
 Used to merge (or stack) plots together.
 Allows fiddling with strength, order and variability of plots.
 
+
+dependencies:
 ```
-# dependencies
 (local storage)
 os
 re
@@ -124,8 +158,9 @@ utils
 Used to pre-process images to sub-folders fitting the retrain script format.
 Also create fold specific training commands, that are run through Train.ipynb.
 
+
+dependencies:
 ```
-# dependencies
 (local storage)
 json
 os
@@ -136,6 +171,7 @@ numpy as np
 
 ## My IPython Notebooks
 
+IPython Notebooks that I use in my project.
 
 ### plotting trials.ipynb
 
@@ -144,8 +180,9 @@ before implementing them in the converter.
 Just on cell, when it is run - the plot appears.
 Like converter.py, based on excerpts from  **Lukas Grasse**'s code.
 
+
+dependencies:
 ```
-# dependencies:
 (local storage)
 numpy as np
 matplotlib.pyplot as plt
@@ -157,8 +194,9 @@ librosa.display
 Facilitates labeling (by model inference) on a random image, than visualizing the image and playing the sound.
 Has a cell for class inference, another for image visualizing and another for sound playing.
 
+
+dependencies:
 ```
-# dependencies:
 (local storage)
 labeler
 utils
@@ -171,10 +209,11 @@ random
 Runs the retrain.py TensorHub script.
 Based on the instructions by [TensorFlow](https://www.tensorflow.org/hub/tutorials/image_retraining) and the instructions in the script itself, visible by running
 ```!python retrain.py -h``` 
-Contains 2 cell, one for systemic runs (and plays an alarm at the end), another for more casual experiments.
+Contains 2 cells, one for systemic runs (and plays an alarm at the end), another for more casual experiments.
 
+
+dependencies:
 ```
-# dependencies:
 (local storage)
 retrain
 IPython.display
@@ -182,7 +221,7 @@ IPython.display
 
 ## Example data
 
-Here is one specific representative audio file (which I personally like)
+One specific and representative audio file (which I personally like)
 of a dog barking, and a few of its image feature representations.
 
 ### 344-3-5-0.wav
