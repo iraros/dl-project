@@ -1,7 +1,6 @@
 import os
 import shutil
 
-import constants
 import utils
 
 retrain_command_template = \
