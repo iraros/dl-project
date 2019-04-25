@@ -49,7 +49,8 @@ def stack_plots(wav_path, spc_path):
 
 image_paths_template = '/home/ira/Desktop/dl_project/datas/UrbanSound8K/image_features/{image_type}'
 
-if __name__ == '__main__':
+
+def merge_all_plots(merge_name):
     spectrogram_paths = utils.get_all_paths(image_paths_template.format(image_type='spectrograms'))
     waveplot_paths = utils.get_all_paths(image_paths_template.format(image_type='wave_forms'))
     if len(spectrogram_paths) != len(waveplot_paths):
@@ -60,10 +61,15 @@ if __name__ == '__main__':
         spectrogram_path = spectrogram_paths[i]
         if os.path.basename(waveplot_path) != os.path.basename(spectrogram_path):
             raise ValueError
+        # merged_image = merge_plots(waveplot_path, spectrogram_path)
         merged_image = stack_plots(waveplot_path, spectrogram_path)
-        save_path = re.sub('wave_forms', 'spectrogram_and_wav_stacked', waveplot_path)
+        save_path = re.sub('wave_forms', merge_name, waveplot_path)
         save_dir = os.path.dirname(save_path)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         merged_image.save(save_path)
         print('finished {} / {}'.format(i, im_num))
+
+
+if __name__ == '__main__':
+    merge_all_plots('spectrogram_and_wav_stacked')

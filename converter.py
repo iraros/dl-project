@@ -5,7 +5,6 @@ import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 import librosa.display
-import random
 
 
 data_path = '/home/ira/Desktop/dl_project/datas/UrbanSound8K'
@@ -48,4 +47,4 @@ def save_image(line, thing_name):
 
 
 
-# save_all_as_thing('small_sample')
+save_all_as_thing('small_sample')
